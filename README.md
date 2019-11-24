@@ -1,6 +1,7 @@
 TM1637
 ======
 Arduino library for TM1637 (LED Driver)
+**WORKING:** adapt for use with mozzi sound library
 
 
 Description
