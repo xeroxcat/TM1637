@@ -144,9 +144,9 @@ class TM1637Display {
   protected:
     void bitDelay();
 
-    void start();
+    //void start();
 
-    void stop();
+    //void stop();
 
     bool writeByte(uint8_t b);
 
