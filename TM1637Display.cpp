@@ -109,7 +109,8 @@ void TM1637Display::clear()
 	setSegments(data);
 }
 
-void TM1637Display::showNumberDec(int num, bool leading_zero, uint8_t length, uint8_t pos)
+void TM1637Display::showNumberDec(int num, bool leading_zero, uint8_t length, 
+                                    uint8_t pos)
 {
   showNumberDecEx(num, 0, leading_zero, length, pos);
 }
@@ -126,8 +127,8 @@ void TM1637Display::showNumberHexEx(uint16_t num, uint8_t dots, bool leading_zer
   showNumberBaseEx(16, num, dots, leading_zero, length, pos);
 }
 
-void TM1637Display::showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots, bool leading_zero,
-                                    uint8_t length, uint8_t pos)
+void TM1637Display::showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots,
+                              bool leading_zero, uint8_t length, uint8_t pos)
 {
     bool negative = false;
 	if (base < 0) {
