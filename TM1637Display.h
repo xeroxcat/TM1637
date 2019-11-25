@@ -50,6 +50,8 @@ class TM1637Display {
     //! @param on Turn display on or off
     void setBrightness(uint8_t brightness, bool on = true);
 
+    bool updateTM1637();
+
     //! Display arbitrary data on the module
     //!
     //! This function receives raw segment values as input and displays them. The segment data

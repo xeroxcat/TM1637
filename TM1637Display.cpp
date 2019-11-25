@@ -77,7 +77,7 @@ TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO, unsigned int bitDel
   // Set the pin direction and default value.
   // Both pins are set as inputs, allowing the pull-up resistors to pull them up
   pinMode(m_pinClk, INPUT);
-  pinMode(m_pinDIO,INPUT);
+  pinMode(m_pinDIO, INPUT);
   digitalWrite(m_pinClk, LOW);
   digitalWrite(m_pinDIO, LOW);
 }
@@ -89,11 +89,11 @@ void TM1637Display::setBrightness(uint8_t brightness, bool on)
 
 void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_t pos)
 {
-  memcpy(m_segments,segments[],length);
-  m_length = length;
+  memcpy(m_segments, segments, length);
   m_pos = pos;
-  m_counter = SET_STEPS;
-  m_datacounter = DIGIT_STEPS * length;
+  //m_counter = SET_STEPS;
+  //m_datacounter = DIGIT_STEPS * length;
+  m_updatable = true;
 
   uint8_t data;
   uint8_t ack;
@@ -315,6 +315,27 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
   pinMode(m_pinDIO, INPUT);
   bitDelay();
+}
+
+bool TM1637Display::updateTM1637()
+{
+  if (!m_updatable)
+    return true;
+  switch (m_counter) {
+    case 0:
+      pinMode(m_pinDIO, OUTPUT);
+      m_counter++;
+      break;
+    case 1:
+      pinMode(m_pinClk, OUTPUT);
+      m_counter++;
+      break;
+    case 2:
+      pinMode(m_pinDIO, OUTPUT);
+      m_counter++;
+      break;
+  }
+ return false; 
 }
 
 void TM1637Display::clear()
