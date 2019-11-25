@@ -103,6 +103,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
 
   //START writeByte(TM1637_I2C_COMM1);
+  /*
   data = TM1637_I2C_COMM1;//segments[k];
 
   // 8 Data Bits
@@ -124,6 +125,66 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
     bitDelay();
     data = data >> 1;
   }
+  */
+  //experimental material
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  //pinMode(m_pinDIO, OUTPUT);
+  //bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  //pinMode(m_pinDIO, OUTPUT);
+  //bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  //pinMode(m_pinDIO, OUTPUT);
+  //bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  //pinMode(m_pinDIO, OUTPUT);
+  //bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  //pinMode(m_pinDIO, OUTPUT);
+  //bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  //pinMode(m_pinDIO, OUTPUT);
+  //bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  pinMode(m_pinDIO, INPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+
+  //end experiment
 
   // Wait for acknowledge
   // CLK to zero
