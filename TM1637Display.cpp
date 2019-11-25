@@ -28,6 +28,8 @@ extern "C" {
 #define TM1637_I2C_COMM1    0x40
 #define TM1637_I2C_COMM2    0xC0
 #define TM1637_I2C_COMM3    0x80
+#define SET_STEPS   100
+#define DIGIT_STEPS 20
 
 //
 //      A
@@ -61,6 +63,12 @@ static const uint8_t minusSegments = 0b01000000;
 
 TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO, unsigned int bitDelay)
 {
+  m_counter = 0;
+  m_datacounter = 0;
+  //memcpy(m_segments,{0,0,0,0},4);
+  m_pos = 0;
+  m_updatable = false;
+
   // Copy the pin numbers
   m_pinClk = pinClk;
   m_pinDIO = pinDIO;
@@ -81,6 +89,12 @@ void TM1637Display::setBrightness(uint8_t brightness, bool on)
 
 void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_t pos)
 {
+  memcpy(m_segments,segments[],length);
+  m_length = length;
+  m_pos = pos;
+  m_counter = SET_STEPS;
+  m_datacounter = DIGIT_STEPS * length;
+
   uint8_t data;
   uint8_t ack;
   // Write COMM1
@@ -145,7 +159,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
 
   //START writeByte(TM1637_I2C_COMM2 + (pos & 0x03));
-  data = TM1637_I2C_COMM2 + (pos & 0x03);//segments[k];
+  data = TM1637_I2C_COMM2 + (pos & 0x03);
 
   // 8 Data Bits
   for(uint8_t i = 0; i < 8; i++) {
