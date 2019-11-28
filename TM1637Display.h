@@ -166,6 +166,7 @@ class TM1637Display {
     uint8_t m_datacounter;
     uint8_t m_pos;
     uint8_t m_segments[4];
+    uint8_t m_segidx;
 };
 
 #endif // __TM1637DISPLAY__

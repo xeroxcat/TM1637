@@ -98,6 +98,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   //m_counter = SET_STEPS;
   //m_datacounter = DIGIT_STEPS * length;
   m_updatable = true;
+  m_segidx = 0;
 
   uint8_t data;
   uint8_t ack;
@@ -332,10 +333,8 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   //END writeByte(TM1637_I2C_COMM2 + (pos & 0x03));
 
   // Write the data bytes
-  for (uint8_t k=0; k < length; k++) {
-    //writeByte(segments[k]);
-    //uint8_t data = b;
-    data = m_segments[k];
+  for (m_segidx=0; m_segidx < length; m_segidx++) {
+    //data = m_segments[k];
 
     // 8 Data Bits
     for(uint8_t i = 0; i < 8; i++) {
@@ -344,7 +343,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
       bitDelay();
 
       // Set data bit
-      if (data & 0x01)
+      if (m_segments[m_segidx] & 0x01)
         pinMode(m_pinDIO, INPUT);
       else
         pinMode(m_pinDIO, OUTPUT);
@@ -354,7 +353,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
       // CLK high
       pinMode(m_pinClk, INPUT);
       bitDelay();
-      data = data >> 1;
+      m_segments[m_segidx] = m_segments[m_segidx] >> 1;
     }
 
     // Wait for acknowledge
