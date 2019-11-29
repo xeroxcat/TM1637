@@ -104,104 +104,64 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   uint8_t ack;
   // Write COMM1
   //start();
+
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
 
-  //START writeByte(TM1637_I2C_COMM1);
-  /*
-  data = TM1637_I2C_COMM1;//segments[k];
-
-  // 8 Data Bits
-  for(uint8_t i = 0; i < 8; i++) {
-    // CLK low
-    pinMode(m_pinClk, OUTPUT);
-    bitDelay();
-
-    // Set data bit
-    if (data & 0x01)
-      pinMode(m_pinDIO, INPUT);
-    else
-      pinMode(m_pinDIO, OUTPUT);
-
-    bitDelay();
-
-    // CLK high
-    pinMode(m_pinClk, INPUT);
-    bitDelay();
-    data = data >> 1;
-  }
-  */
-  //experimental material
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //pinMode(m_pinDIO, OUTPUT);
-  //bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //pinMode(m_pinDIO, OUTPUT);
-  //bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //pinMode(m_pinDIO, OUTPUT);
-  //bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //pinMode(m_pinDIO, OUTPUT);
-  //bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //pinMode(m_pinDIO, OUTPUT);
-  //bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //pinMode(m_pinDIO, OUTPUT);
-  //bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
+
   pinMode(m_pinDIO, INPUT);
   bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
-
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
+
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
+
   pinMode(m_pinClk, INPUT);
   bitDelay();
 
-  //end experiment
-
-  // Wait for acknowledge
-  // CLK to zero
   pinMode(m_pinClk, OUTPUT);
   pinMode(m_pinDIO, INPUT);
   bitDelay();
 
-  // CLK to high
   pinMode(m_pinClk, INPUT);
   bitDelay();
   
-  //uint8_t ack = digitalRead(m_pinDIO);
-  //ack = digitalRead(m_pinDIO);
   if (digitalRead(m_pinDIO) == 0)
     pinMode(m_pinDIO, OUTPUT);
 
@@ -210,7 +170,6 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
   //END writeByte(TM1637_I2C_COMM1);
 
-  //stop();
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
   pinMode(m_pinClk, INPUT);
@@ -219,14 +178,9 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
 
   // Write COMM2 + first digit address
-  //start();
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
 
-  //START writeByte(TM1637_I2C_COMM2 + (pos & 0x03));
-  //data = TM1637_I2C_COMM2 + (pos & 0x03);
-
-  //unrolled loop
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
 
@@ -289,47 +243,14 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //end page 1
 
-  // 8 Data Bits
-  /*
-  for(uint8_t i = 0; i < 8; i++) {
-    // CLK low
-    pinMode(m_pinClk, OUTPUT);
-    bitDelay();
-
-    // Set data bit
-    if (data & 0x01)
-      pinMode(m_pinDIO, INPUT);
-    else
-      pinMode(m_pinDIO, OUTPUT);
-
-    bitDelay();
-
-    // CLK high
-    pinMode(m_pinClk, INPUT);
-    bitDelay();
-    data = data >> 1;
-  }
-  */
-  // Wait for acknowledge
-  // CLK to zero
-  //pinMode(m_pinClk, OUTPUT);
-  //pinMode(m_pinDIO, INPUT);
-  //bitDelay();
-
-  // CLK to high
   pinMode(m_pinClk, INPUT);
   bitDelay();
 
-  //uint8_t ack = digitalRead(m_pinDIO);
-  //ack = digitalRead(m_pinDIO);
   if (digitalRead(m_pinDIO) == 0)
     pinMode(m_pinDIO, OUTPUT);
 
   bitDelay();
-  //pinMode(m_pinClk, OUTPUT);
-  //bitDelay();
   //END writeByte(TM1637_I2C_COMM2 + (pos & 0x03));
 
   // Write the data bytes
@@ -356,30 +277,22 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
       m_segments[m_segidx] = m_segments[m_segidx] >> 1;
     }
 
-    // Wait for acknowledge
-    // CLK to zero
     pinMode(m_pinClk, OUTPUT);
     pinMode(m_pinDIO, INPUT);
     bitDelay();
 
-    // CLK to high
     pinMode(m_pinClk, INPUT);
     bitDelay();
 
-    //uint8_t ack = digitalRead(m_pinDIO);
     ack = digitalRead(m_pinDIO);
     if (ack == 0)
       pinMode(m_pinDIO, OUTPUT);
 
-
     bitDelay();
     pinMode(m_pinClk, OUTPUT);
     bitDelay();
-
-    //return ack;
   }
 
-  //stop();
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
   pinMode(m_pinClk, INPUT);
@@ -388,55 +301,95 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
 
   // Write COMM3 + brightness
-  //start();
   pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  
+  if (m_brightness & 0x01)
+    pinMode(m_pinDIO, INPUT);
+  else
+    pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+
+  if (m_brightness & 0x02)
+    pinMode(m_pinDIO, INPUT);
+  else
+    pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+
+  if (m_brightness & 0x04)
+    pinMode(m_pinDIO, INPUT);
+  else
+    pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  if (m_brightness & 0x08)
+    pinMode(m_pinDIO, INPUT);
+  else
+    pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  pinMode(m_pinDIO, OUTPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
+  bitDelay();
+
+  pinMode(m_pinClk, OUTPUT);
+  bitDelay();
+  pinMode(m_pinDIO, INPUT);
+  bitDelay();
+  pinMode(m_pinClk, INPUT);
   bitDelay();
 
   //START writeByte(TM1637_I2C_COMM3 + (m_brightness & 0x0f));
   data = TM1637_I2C_COMM3 + (m_brightness & 0x0f);
 
-  // 8 Data Bits
-  for(uint8_t i = 0; i < 8; i++) {
-    // CLK low
-    pinMode(m_pinClk, OUTPUT);
-    bitDelay();
-
-    // Set data bit
-    if (data & 0x01)
-      pinMode(m_pinDIO, INPUT);
-    else
-      pinMode(m_pinDIO, OUTPUT);
-
-    bitDelay();
-
-    // CLK high
-    pinMode(m_pinClk, INPUT);
-    bitDelay();
-    data = data >> 1;
-  }
-
-  // Wait for acknowledge
-  // CLK to zero
   pinMode(m_pinClk, OUTPUT);
   pinMode(m_pinDIO, INPUT);
   bitDelay();
-
-  // CLK to high
   pinMode(m_pinClk, INPUT);
   bitDelay();
 
-  //uint8_t ack = digitalRead(m_pinDIO);
-  ack = digitalRead(m_pinDIO);
-  if (ack == 0)
+  if (digitalRead(m_pinDIO) == 0)
     pinMode(m_pinDIO, OUTPUT);
-
 
   bitDelay();
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-  //END writeByte(TM1637_I2C_COMM3 + (m_brightness & 0x0f));
 
-  //stop();
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
   pinMode(m_pinClk, INPUT);
@@ -452,16 +405,10 @@ bool TM1637Display::updateTM1637()
   switch (m_counter) {
     case 0:
       pinMode(m_pinDIO, OUTPUT);
-      m_counter++;
-      break;
     case 1:
       pinMode(m_pinClk, OUTPUT);
-      m_counter++;
-      break;
     case 2:
       pinMode(m_pinDIO, OUTPUT);
-      m_counter++;
-      break;
   }
  return false; 
 }
