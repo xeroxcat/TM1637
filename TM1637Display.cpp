@@ -28,8 +28,8 @@ extern "C" {
 #define TM1637_I2C_COMM1    0x40
 #define TM1637_I2C_COMM2    0xC0
 #define TM1637_I2C_COMM3    0x80
-#define SET_STEPS   100
-#define DIGIT_STEPS 20
+//#define SET_STEPS   100
+#define DIGIT_STEPS 28
 
 //
 //      A
@@ -80,6 +80,7 @@ TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO, unsigned int bitDel
   pinMode(m_pinDIO, INPUT);
   digitalWrite(m_pinClk, LOW);
   digitalWrite(m_pinDIO, LOW);
+  //Serial.begin(9600);
 }
 
 void TM1637Display::setBrightness(uint8_t brightness, bool on)
@@ -95,8 +96,8 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   }
   memcpy(m_segments, segments, length);
   m_pos = pos;
-  //m_counter = SET_STEPS;
-  //m_datacounter = DIGIT_STEPS * length;
+  m_counter = 0;
+  m_datacounter = (DIGIT_STEPS * length) - 1;
   m_updatable = true;
   m_segidx = 0;
 
@@ -104,7 +105,8 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   uint8_t ack;
   // Write COMM1
   //start();
-
+  //case0
+  /*
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
 
@@ -118,6 +120,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
   pinMode(m_pinClk, INPUT);
   bitDelay();
+  //case5
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
 
@@ -130,7 +133,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
-
+  //case10
   pinMode(m_pinClk, INPUT);
   bitDelay();
   pinMode(m_pinClk, OUTPUT);
@@ -143,7 +146,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
   pinMode(m_pinDIO, INPUT);
   bitDelay();
-
+  //case15
   pinMode(m_pinClk, INPUT);
   bitDelay();
   pinMode(m_pinClk, OUTPUT);
@@ -158,7 +161,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   pinMode(m_pinClk, OUTPUT);
   pinMode(m_pinDIO, INPUT);
   bitDelay();
-
+  //case20
   pinMode(m_pinClk, INPUT);
   bitDelay();
   
@@ -174,6 +177,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
   pinMode(m_pinClk, INPUT);
   bitDelay();
+  //case25
   pinMode(m_pinDIO, INPUT);
   bitDelay();
 
@@ -193,6 +197,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
   pinMode(m_pinClk, INPUT);
   bitDelay();
+  //case30
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
 
@@ -210,7 +215,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
   pinMode(m_pinDIO, OUTPUT);
   bitDelay();
-
+  //case35
   pinMode(m_pinClk, INPUT);
   bitDelay();
   pinMode(m_pinClk, OUTPUT);
@@ -223,6 +228,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
   pinMode(m_pinClk, INPUT);
   bitDelay();
+  //case40
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
 
@@ -236,6 +242,7 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
 
   pinMode(m_pinClk, INPUT);
   bitDelay();
+  //case45
   pinMode(m_pinClk, OUTPUT);
   bitDelay();
 
@@ -396,21 +403,452 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_
   bitDelay();
   pinMode(m_pinDIO, INPUT);
   bitDelay();
+  */
 }
 
 bool TM1637Display::updateTM1637()
 {
+  Serial.print("\tm_counter:");
+  Serial.print(m_counter);
+  Serial.print("\tm_datacounter:");
+  Serial.print(m_datacounter);
+  Serial.print("   \tm_updatable:");
+  Serial.print(m_updatable);
   if (!m_updatable)
     return true;
   switch (m_counter) {
     case 0:
+      //Serial.print("----");
       pinMode(m_pinDIO, OUTPUT);
+      break;
     case 1:
       pinMode(m_pinClk, OUTPUT);
+      break;
     case 2:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 3:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 4:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 5:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 6:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 7:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 8:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 9:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 10:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 11:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 12:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 13:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 14:
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 15:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 16:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 17:
       pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 18:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 19:
+      pinMode(m_pinClk, OUTPUT);
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 20:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 21:
+      if (digitalRead(m_pinDIO) == 0)
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 22:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+      //END writeByte(TM1637_I2C_COMM1);
+    case 23:
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 24:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 25:
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 26:
+      //write COMM2 + first digit address
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 27:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 28:
+      if (m_pos & 0x01) {
+        pinMode(m_pinDIO, INPUT);
+      } else {
+        pinMode(m_pinDIO, OUTPUT);
+      }
+      break;
+    case 29:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 30:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 31:
+      if (m_pos & 0x02) {
+        pinMode(m_pinDIO, INPUT);
+      } else {
+        pinMode(m_pinDIO, OUTPUT);
+      }
+      break;
+    case 32:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 33:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 34:
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 35:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 36:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 37:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 38:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 39:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 40:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 41:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 42:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 43:
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 44:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 45:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 46:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 47:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 48:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 49:
+      if (digitalRead(m_pinDIO) == 0)
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    //END writeByte(TM1637_I2C_COMM2 + (pos & 0x03));
+    case 50:
+      switch (m_datacounter % 28) {
+        case 27:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("a");
+          break;
+        case 26:
+          if (m_segments[m_segidx] & 0x01)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("b");
+          break;
+        case 25:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("c");
+          break;
+        case 24:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("d");
+          break;
+        case 23:
+          if (m_segments[m_segidx] & 0x02)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("e");
+          break;
+        case 22:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("f");
+          break;
+        case 21:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("g");
+          break;
+        case 20:
+          if (m_segments[m_segidx] & 0x04)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("h");
+          break;
+        case 19:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("i");
+          break;
+        case 18:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("j");
+          break;
+        case 17:
+          if (m_segments[m_segidx] & 0x08)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("k");
+          break;
+        case 16:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("l");
+          break;
+        case 15:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("m");
+          break;
+        case 14:
+          if (m_segments[m_segidx] & 0x10)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("n");
+          break;
+        case 13:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("o");
+          break;
+        case 12:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("p");
+          break;
+        case 11:
+          if (m_segments[m_segidx] & 0x20)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("q");
+          break;
+        case 10:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("r");
+          break;
+        case 9:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("s");
+          break;
+        case 8:
+          if (m_segments[m_segidx] & 0x40)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("t");
+          break;
+        case 7:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("u");
+          break;
+        case 6:
+          pinMode(m_pinClk, OUTPUT);
+          Serial.print("v");
+          break;
+        case 5:
+          if (m_segments[m_segidx] & 0x80)
+            pinMode(m_pinDIO, INPUT);
+          else
+            pinMode(m_pinDIO, OUTPUT);
+          Serial.print("w");
+          break;
+        case 4:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("x");
+          break;
+        case 3:
+          pinMode(m_pinClk, OUTPUT);
+          pinMode(m_pinDIO, INPUT);
+          Serial.print("y");
+          break;
+        case 2:
+          pinMode(m_pinClk, INPUT);
+          Serial.print("z");
+          break;
+        case 1:
+          if(digitalRead(m_pinDIO) == 0)
+            pinMode(m_pinDIO, OUTPUT);
+          break;
+        case 0:
+          pinMode(m_pinClk, OUTPUT);
+          m_segidx++;
+          break;
+      }
+      //Serial.print("-+-+");
+      if (m_datacounter == 0)
+        m_counter++;
+      else
+        m_datacounter--;
+      return false;
+      //skip below m_counter incremen
+    case 51:
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 52:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 53:
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 54:
+      // Write COMM3 + brightness
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 55:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 56:
+      if (m_brightness & 0x01)
+        pinMode(m_pinDIO, INPUT);
+      else
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 57:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 58:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 59:
+      if (m_brightness & 0x02)
+        pinMode(m_pinDIO, INPUT);
+      else
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 60:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 61:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 62:
+      if (m_brightness & 0x04)
+        pinMode(m_pinDIO, INPUT);
+      else
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 63:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 64:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 65:
+      if (m_brightness & 0x08)
+        pinMode(m_pinDIO, INPUT);
+      else
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 66:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 67:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 68:
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 69:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 70:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 71:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 72:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 73:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 74:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 75:
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 76:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 77:
+      //START writeByte(TM1637_I2C_COMM3 + (m_brightness & 0x0f));
+      pinMode(m_pinClk, OUTPUT);
+      pinMode(m_pinDIO, INPUT);
+      break;
+    case 78:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 79:
+      if (digitalRead(m_pinDIO) == 0)
+        pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 80:
+      pinMode(m_pinClk, OUTPUT);
+      break;
+    case 81:
+      pinMode(m_pinDIO, OUTPUT);
+      break;
+    case 82:
+      pinMode(m_pinClk, INPUT);
+      break;
+    case 83:
+      pinMode(m_pinDIO, INPUT);
+      m_updatable = false;
+      break;
   }
- return false; 
+  Serial.print("++++");
+  m_counter++;
+  return false; 
 }
 
 void TM1637Display::clear()
