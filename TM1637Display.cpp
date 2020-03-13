@@ -59,7 +59,8 @@ const uint8_t digitToSegment[] = {
 
 static const uint8_t minusSegments = 0b01000000;
 
-TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO, unsigned int bitDelay)
+TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO,
+                             unsigned int bitDelay)
 {
   // Copy the pin numbers
   m_pinClk = pinClk;
@@ -79,7 +80,8 @@ void TM1637Display::setBrightness(uint8_t brightness, bool on)
   m_brightness = (brightness & 0x7) | (on? 0x08 : 0x00);
 }
 
-void TM1637Display::setSegments(const uint8_t segments[], uint8_t length, uint8_t pos)
+void TM1637Display::setSegments(const uint8_t segments[], uint8_t length,
+                                uint8_t pos)
 {
   // Write COMM1
   //start();
@@ -135,34 +137,35 @@ void TM1637Display::clear()
   setSegments(data);
 }
 
-void TM1637Display::showNumberDec(int num, bool leading_zero, uint8_t length, 
-    uint8_t pos)
+void TM1637Display::showNumberDec(int num, bool leading_zero,
+                                  uint8_t length, uint8_t pos)
 {
   showNumberDecEx(num, 0, leading_zero, length, pos);
 }
 
 void TM1637Display::showNumberDecEx(int num, uint8_t dots, bool leading_zero,
-    uint8_t length, uint8_t pos)
+                                    uint8_t length, uint8_t pos)
 {
-  showNumberBaseEx(num < 0? -10 : 10, num < 0? -num : num, dots, leading_zero, length, pos);
+  showNumberBaseEx(num < 0? -10 : 10, num < 0? -num : num,
+                   dots, leading_zero, length, pos);
 }
 
-void TM1637Display::showNumberHexEx(uint16_t num, uint8_t dots, bool leading_zero,
-    uint8_t length, uint8_t pos)
+void TM1637Display::showNumberHexEx(uint16_t num, uint8_t dots,
+                                    bool leading_zero, uint8_t length,
+                                    uint8_t pos)
 {
   showNumberBaseEx(16, num, dots, leading_zero, length, pos);
 }
 
 void TM1637Display::showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots,
-    bool leading_zero, uint8_t length, uint8_t pos)
+                                     bool leading_zero, uint8_t length,
+                                     uint8_t pos)
 {
   bool negative = false;
   if (base < 0) {
     base = -base;
     negative = true;
   }
-
-
   uint8_t digits[4];
 
   if (num == 0 && !leading_zero) {
@@ -264,7 +267,6 @@ bool TM1637Display::writeByte(uint8_t b)
   uint8_t ack = digitalRead(m_pinDIO);
   if (ack == 0)
     pinMode(m_pinDIO, OUTPUT);
-
 
   bitDelay();
   pinMode(m_pinClk, OUTPUT);

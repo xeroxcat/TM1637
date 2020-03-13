@@ -39,7 +39,8 @@ class TM1637Display {
     //! @param pinDIO - The number of the digital pin connected to the DIO pin of the module
     //! @param bitDelay - The delay, in microseconds, between bit transition on the serial
     //!                   bus connected to the display
-    TM1637Display(uint8_t pinClk, uint8_t pinDIO, unsigned int bitDelay = DEFAULT_BIT_DELAY);
+    TM1637Display(uint8_t pinClk, uint8_t pinDIO,
+                  unsigned int bitDelay = DEFAULT_BIT_DELAY);
 
     //! Sets the brightness of the display.
     //!
@@ -62,7 +63,8 @@ class TM1637Display {
     //! @param segments An array of size @ref length containing the raw segment values
     //! @param length The number of digits to be modified
     //! @param pos The position from which to start the modification (0 - leftmost, 3 - rightmost)
-    void setSegments(const uint8_t segments[], uint8_t length = 4, uint8_t pos = 0);
+    void setSegments(const uint8_t segments[], uint8_t length = 4,
+                     uint8_t pos = 0);
 
     //! Clear the display
     void clear();
@@ -78,7 +80,8 @@ class TM1637Display {
     //!        fits to the number of digits requested (for example, if two digits are to be displayed,
     //!        the number must be between 0 to 99)
     //! @param pos The position of the most significant digit (0 - leftmost, 3 - rightmost)
-    void showNumberDec(int num, bool leading_zero = false, uint8_t length = 4, uint8_t pos = 0);
+    void showNumberDec(int num, bool leading_zero = false, uint8_t length = 4,
+                       uint8_t pos = 0);
 
     //! Display a decimal number, with dot control
     //!
@@ -103,7 +106,8 @@ class TM1637Display {
     //!        fits to the number of digits requested (for example, if two digits are to be displayed,
     //!        the number must be between 0 to 99)
     //! @param pos The position of the most significant digit (0 - leftmost, 3 - rightmost)
-    void showNumberDecEx(int num, uint8_t dots = 0, bool leading_zero = false, uint8_t length = 4, uint8_t pos = 0);
+    void showNumberDecEx(int num, uint8_t dots = 0, bool leading_zero = false,
+                         uint8_t length = 4, uint8_t pos = 0);
 
     //! Display a hexadecimal number, with dot control
     //!
@@ -128,7 +132,9 @@ class TM1637Display {
     //!        fits to the number of digits requested (for example, if two digits are to be displayed,
     //!        the number must be between 0 to 99)
     //! @param pos The position of the most significant digit (0 - leftmost, 3 - rightmost)
-    void showNumberHexEx(uint16_t num, uint8_t dots = 0, bool leading_zero = false, uint8_t length = 4, uint8_t pos = 0);
+    void showNumberHexEx(uint16_t num, uint8_t dots = 0,
+                         bool leading_zero = false, uint8_t length = 4,
+                         uint8_t pos = 0);
 
     //! Translate a single digit into 7 segment code
     //!
@@ -144,15 +150,14 @@ class TM1637Display {
   protected:
     void bitDelay();
 
-    //void start();
-
-    //void stop();
 
     bool writeByte(uint8_t b);
 
     void showDots(uint8_t dots, uint8_t* digits);
 
-    void showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots = 0, bool leading_zero = false, uint8_t length = 4, uint8_t pos = 0);
+    void showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots = 0,
+                          bool leading_zero = false, uint8_t length = 4,
+                          uint8_t pos = 0);
 
   private:
     uint8_t m_pinClk;
