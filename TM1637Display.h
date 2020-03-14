@@ -147,9 +147,13 @@ class TM1637Display {
     //!         bit 6 - segment G; bit 7 - always zero)
     uint8_t encodeDigit(uint8_t digit);
 
-  protected:
-    void bitDelay();
+    bool update();
 
+  protected:
+
+    uint8_t sendHead(uint8_t step);
+
+    void bitDelay();
 
     bool writeByte(uint8_t b);
 
@@ -164,6 +168,12 @@ class TM1637Display {
     uint8_t m_pinDIO;
     uint8_t m_brightness;
     unsigned int m_bitDelay;
+    uint8_t m_counter;
+    uint8_t m_length;
+    uint8_t m_pos;
+    uint8_t m_segments[4];
+    uint8_t m_byte;
+    uint8_t m_bit_count;
 };
 
 #endif // __TM1637DISPLAY__
