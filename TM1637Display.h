@@ -28,41 +28,55 @@
 #define SEG_G   0b01000000
 #define SEG_DP  0b10000000
 
-#define DEFAULT_BIT_DELAY  100
+//#define DEFAULT_BIT_DELAY  100
 
 class TM1637Display {
   public:
     //! Initialize a TM1637Display object, setting the clock and
     //! data pins.
     //!
-    //! @param pinClk - The number of the digital pin connected to the clock pin of the module
-    //! @param pinDIO - The number of the digital pin connected to the DIO pin of the module
-    //! @param bitDelay - The delay, in microseconds, between bit transition on the serial
-    //!                   bus connected to the display
-    TM1637Display(uint8_t pinClk, uint8_t pinDIO,
-                  unsigned int bitDelay = DEFAULT_BIT_DELAY);
+    //! @param pinClk - The number of the digital pin connected to the clock
+    //!   pin of the module
+    //! @param pinDIO - The number of the digital pin connected to the DIO pin
+    //!   of the module
+    //! @param bitDelay - The delay, in microseconds, between bit transition on
+    //!   the serial bus connected to the display
+    TM1637Display(uint8_t pinClk, uint8_t pinDIO);
+
+    //! Iterate through a single step of the current transmission process.
+    //! return true if no transmission is in progress. Functions which display
+    //! data (including clear()) should not be called unless update() returns
+    //! true. to transmit with a 200 microsecond period (DEFAULT_BIT_DELAY 100)
+    //! call update() once every 100 microseconds.
+    //!
+    //! @return true if no update is in progress, else false
+    bool update();
 
     //! Sets the brightness of the display.
     //!
     //! The setting takes effect when a command is given to change the data being
     //! displayed.
     //!
-    //! @param brightness A number from 0 (lowes brightness) to 7 (highest brightness)
+    //! @param brightness A number from 0 (lowest brightness) to 7 (highest
+    //!   brightness)
     //! @param on Turn display on or off
     void setBrightness(uint8_t brightness, bool on = true);
 
     //! Display arbitrary data on the module
     //!
-    //! This function receives raw segment values as input and displays them. The segment data
-    //! is given as a byte array, each byte corresponding to a single digit. Within each byte,
-    //! bit 0 is segment A, bit 1 is segment B etc.
-    //! The function may either set the entire display or any desirable part on its own. The first
-    //! digit is given by the @ref pos argument with 0 being the leftmost digit. The @ref length
-    //! argument is the number of digits to be set. Other digits are not affected.
+    //! This function receives raw segment values as input and displays them.
+    //! The segment data is given as a byte array, each byte corresponding to a
+    //! single digit. Within each byte, bit 0 is segment A, bit 1 is segment B
+    //! etc. The function may either set the entire display or any desirable
+    //! part on its own. The first digit is given by the @ref pos argument with
+    //! 0 being the leftmost digit. The @ref length argument is the number of
+    //! digits to be set. Other digits are not affected.
     //!
-    //! @param segments An array of size @ref length containing the raw segment values
+    //! @param segments An array of size @ref length containing the raw segment
+    //!   values
     //! @param length The number of digits to be modified
-    //! @param pos The position from which to start the modification (0 - leftmost, 3 - rightmost)
+    //! @param pos The position from which to start the modification
+    //!   (0 - leftmost, 3 - rightmost)
     void setSegments(const uint8_t segments[], uint8_t length = 4,
                      uint8_t pos = 0);
 
@@ -74,12 +88,15 @@ class TM1637Display {
     //! Dispaly the given argument as a decimal number.
     //!
     //! @param num The number to be shown
-    //! @param leading_zero When true, leading zeros are displayed. Otherwise unnecessary digits are
-    //!        blank. NOTE: leading zero is not supported with negative numbers.
-    //! @param length The number of digits to set. The user must ensure that the number to be shown
-    //!        fits to the number of digits requested (for example, if two digits are to be displayed,
-    //!        the number must be between 0 to 99)
-    //! @param pos The position of the most significant digit (0 - leftmost, 3 - rightmost)
+    //! @param leading_zero When true, leading zeros are displayed. Otherwise
+    //!   unnecessary digits are blank. NOTE: leading zero is not supported with
+    //!   negative numbers.
+    //! @param length The number of digits to set. The user must ensure that the
+    //!   number to be shown fits to the number of digits requested (for
+    //!   example, if two digits are to be displayed, the number must be between
+    //!   0 to 99)
+    //! @param pos The position of the most significant digit (0 - leftmost,
+    //!   3 - rightmost)
     void showNumberDec(int num, bool leading_zero = false, uint8_t length = 4,
                        uint8_t pos = 0);
 
@@ -147,15 +164,11 @@ class TM1637Display {
     //!         bit 6 - segment G; bit 7 - always zero)
     uint8_t encodeDigit(uint8_t digit);
 
-    bool update();
-
   protected:
 
-    uint8_t sendHead(uint8_t step);
+    void sendHead(uint8_t step);
 
-    void bitDelay();
-
-    bool writeByte(uint8_t b);
+    void writeByte(uint8_t step);
 
     void showDots(uint8_t dots, uint8_t* digits);
 
@@ -167,7 +180,7 @@ class TM1637Display {
     uint8_t m_pinClk;
     uint8_t m_pinDIO;
     uint8_t m_brightness;
-    unsigned int m_bitDelay;
+  //unsigned int m_bitDelay;
     uint8_t m_counter;
     uint8_t m_length;
     uint8_t m_pos;

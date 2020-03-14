@@ -59,12 +59,11 @@ const uint8_t digitToSegment[] = {
 
 static const uint8_t minusSegments = 0b01000000;
 
-TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO,
-                             unsigned int bitDelay) {
+TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO) {
   // Copy the pin numbers
   m_pinClk = pinClk;
   m_pinDIO = pinDIO;
-  m_bitDelay = bitDelay;
+  //m_bitDelay = bitDelay;
   m_counter = 60;
 
   // Set the pin direction and default value.
@@ -93,10 +92,9 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length,
   pinMode(m_pinDIO, OUTPUT);
   m_byte = TM1637_I2C_COMM1;
   m_bit_count = 8;
-  //update();
 }
 
-uint8_t TM1637Display::sendHead(uint8_t step) {
+void TM1637Display::sendHead(uint8_t step) {
   switch(step) {
   case 0:
     //stop();
@@ -114,7 +112,6 @@ uint8_t TM1637Display::sendHead(uint8_t step) {
     pinMode(m_pinDIO, OUTPUT);
     break;
   }
-  return 0;
 }
 
 bool TM1637Display::update() {
@@ -122,92 +119,56 @@ bool TM1637Display::update() {
   //Serial.print(":");
   //Serial.print(m_bit_count);
   //Serial.print(" ");
-  //bitDelay();
   if (m_counter == (36 + m_length*8)) {
     return true;
     Serial.println("");
   }
-  //if (m_counter == 0) {
-  //  m_byte = TM1637_I2C_COMM1;
-  //  m_bit_count = 8;
-  //}
-  //Serial.print(m_byte, BIN);
-  //Serial.print(":");
   if (m_counter < 8){
     writeByte(m_counter);
     return false;
-    //bitDelay();
   }
-  //Serial.println("");
   if (m_counter < 12) {
     sendHead(m_counter - 8);
     m_counter++;
     return false;
-    //bitDelay();
   }
-  //Serial.println("");
   if (m_counter == 12) {
     m_byte = TM1637_I2C_COMM2 + (m_pos & 0x03);
-    //m_bit_count = 8;
   }
-  //Serial.print(m_byte, BIN);
-  //Serial.print(":");
   if (m_counter < 20) {
     writeByte(m_counter-12);
-    //bitDelay();
     return false;
   }
   // Write the data bytes
-  //Serial.println("");
-  //for (uint8_t k=0; k < m_length; k++) {
   if ((m_counter < (24 + m_length*8))
       && ((m_counter-20)%8 == 0)) {
     m_byte = m_segments[(m_counter-20)/8];
-    //m_bit_count = 8;
   }
-    //Serial.print(m_byte, BIN);
-    //Serial.print(":");
-    //while (m_counter < k*7 + 25){
-    //  writeByte(m_counter-(k*7 + 18));
-    //  bitDelay();
-    //}
-    //Serial.println("");
   if (m_counter < m_length*8 + 20) {
     writeByte((m_counter-20)%8);
     return false;
   }
-
   if (m_counter < (24 + m_length*8)) {
     sendHead(m_counter - (20 + m_length*8));
     m_counter++;
-    //bitDelay();
     return false;
   }
-  //Serial.println("");
   if (m_counter == (24 + m_length*8)) {
     m_byte = TM1637_I2C_COMM3 + (m_brightness & 0x0f);
-    //m_bit_count = 8;
   }
-  //Serial.print(m_byte, BIN);
-  //Serial.print(":");
   if (m_counter < (32 + m_length*8)) {
     writeByte(m_counter - (24 + m_length*8));
     return false;
-    //bitDelay();
   }
-  //Serial.println("");
-
   if (m_counter < (36 + m_length*8)) {
     sendHead(m_counter - (32 + m_length*8));
     m_counter++;
     return false;
-    //bitDelay();
   }
-  //Serial.println("$");
   return false;
 }
 
-bool TM1637Display::writeByte(uint8_t step) {
+void TM1637Display::writeByte(uint8_t step) {
   switch(step) {
   case 0:
     m_bit_count = 8;
@@ -250,7 +211,7 @@ bool TM1637Display::writeByte(uint8_t step) {
   } else {
     m_counter = m_counter - 2;
   }
-  return step;
+  //return step;
 }
 
 void TM1637Display::clear() {
@@ -324,13 +285,6 @@ void TM1637Display::showNumberBaseEx(int8_t base, uint16_t num, uint8_t dots,
   setSegments(digits, length, pos);
 }
 
-void TM1637Display::bitDelay() {
-  //Serial.print(m_counter);
-  //Serial.print(" ");
-  delayMicroseconds(m_bitDelay);
-}
-
-
 void TM1637Display::showDots(uint8_t dots, uint8_t* digits) {
   for(int i = 0; i < 4; ++i) {
     digits[i] |= (dots & 0x80);
@@ -342,8 +296,11 @@ uint8_t TM1637Display::encodeDigit(uint8_t digit) {
   return digitToSegment[digit & 0x0f];
 }
 
-
 /*
+  void TM1637Display::bitDelay() {
+  delayMicroseconds(m_bitDelay);
+  }
+
   void TM1637Display::start()
   {
   pinMode(m_pinDIO, OUTPUT);
