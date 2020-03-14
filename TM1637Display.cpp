@@ -65,6 +65,7 @@ TM1637Display::TM1637Display(uint8_t pinClk, uint8_t pinDIO,
   m_pinClk = pinClk;
   m_pinDIO = pinDIO;
   m_bitDelay = bitDelay;
+  m_counter = 60;
 
   // Set the pin direction and default value.
   // Both pins are set as inputs, allowing the pull-up resistors to pull them up
@@ -88,20 +89,16 @@ void TM1637Display::setSegments(const uint8_t segments[], uint8_t length,
   m_pos = pos;
   m_counter = 0;
   m_length = length;
-  //m_datacounter = (DIGIT_STEPS * length) - 1;
-  //m_updatable = true;
   m_byte = 0;
-  update();
+  pinMode(m_pinDIO, OUTPUT);
+  m_byte = TM1637_I2C_COMM1;
+  m_bit_count = 8;
+  //update();
 }
 
 uint8_t TM1637Display::sendHead(uint8_t step) {
-  //Serial.print(m_counter);
-  //Serial.print("(");
-  //Serial.print(step);
-  //Serial.print(") ");
   switch(step) {
   case 0:
-    //Serial.print("(");
     //stop();
     pinMode(m_pinDIO, OUTPUT);
     break;
@@ -121,124 +118,132 @@ uint8_t TM1637Display::sendHead(uint8_t step) {
 }
 
 bool TM1637Display::update() {
-  pinMode(m_pinDIO, OUTPUT);
-  bitDelay();
-  m_byte = TM1637_I2C_COMM1;
-  m_bit_count = 8;
+  //Serial.print(m_counter);
+  //Serial.print(":");
+  //Serial.print(m_bit_count);
+  //Serial.print(" ");
+  //bitDelay();
+  if (m_counter == (36 + m_length*8)) {
+    return true;
+    Serial.println("");
+  }
+  //if (m_counter == 0) {
+  //  m_byte = TM1637_I2C_COMM1;
+  //  m_bit_count = 8;
+  //}
   //Serial.print(m_byte, BIN);
   //Serial.print(":");
-  while (m_counter < 7){
+  if (m_counter < 8){
     writeByte(m_counter);
-    //if ((m_counter == 2) && (m_bit_count == 0)) {
-    //  m_counter = 3;
-    //} else if (m_counter == 2) {
-    //  m_counter = 0;
-    //} else {
-    //  m_counter++;
-    //}
-
-    //m_counter = newv;
-    bitDelay();
+    return false;
+    //bitDelay();
   }
   //Serial.println("");
-  while (m_counter < 11) {
-    sendHead(m_counter - 7);
+  if (m_counter < 12) {
+    sendHead(m_counter - 8);
     m_counter++;
-    bitDelay();
+    return false;
+    //bitDelay();
   }
   //Serial.println("");
-  m_byte = TM1637_I2C_COMM2 + (m_pos & 0x03);
-  m_bit_count = 8;
+  if (m_counter == 12) {
+    m_byte = TM1637_I2C_COMM2 + (m_pos & 0x03);
+    //m_bit_count = 8;
+  }
   //Serial.print(m_byte, BIN);
   //Serial.print(":");
-  while (m_counter < 18) {
-    writeByte(m_counter-11);
-    bitDelay();
+  if (m_counter < 20) {
+    writeByte(m_counter-12);
+    //bitDelay();
+    return false;
   }
   // Write the data bytes
   //Serial.println("");
-  for (uint8_t k=0; k < m_length; k++) {
-    m_byte = m_segments[k];
-    m_bit_count = 8;
+  //for (uint8_t k=0; k < m_length; k++) {
+  if ((m_counter < (24 + m_length*8))
+      && ((m_counter-20)%8 == 0)) {
+    m_byte = m_segments[(m_counter-20)/8];
+    //m_bit_count = 8;
+  }
     //Serial.print(m_byte, BIN);
     //Serial.print(":");
-    while (m_counter < k*7 + 25){
-      writeByte(m_counter-(k*7 + 18));
-      bitDelay();
-    }
+    //while (m_counter < k*7 + 25){
+    //  writeByte(m_counter-(k*7 + 18));
+    //  bitDelay();
+    //}
     //Serial.println("");
+  if (m_counter < m_length*8 + 20) {
+    writeByte((m_counter-20)%8);
+    return false;
   }
-  //Serial.println("");
 
-  while (m_counter < (22 + m_length*7)) {
-    sendHead(m_counter - (18 + m_length*7));
+  if (m_counter < (24 + m_length*8)) {
+    sendHead(m_counter - (20 + m_length*8));
     m_counter++;
-    bitDelay();
+    //bitDelay();
+    return false;
   }
   //Serial.println("");
-  m_byte = TM1637_I2C_COMM3 + (m_brightness & 0x0f);
-  m_bit_count = 8;
+  if (m_counter == (24 + m_length*8)) {
+    m_byte = TM1637_I2C_COMM3 + (m_brightness & 0x0f);
+    //m_bit_count = 8;
+  }
   //Serial.print(m_byte, BIN);
   //Serial.print(":");
-  while (m_counter < (29 + m_length*7)) {
-    writeByte(m_counter - (22 + m_length*7));
-    bitDelay();
+  if (m_counter < (32 + m_length*8)) {
+    writeByte(m_counter - (24 + m_length*8));
+    return false;
+    //bitDelay();
   }
   //Serial.println("");
 
-  while (m_counter < (32 + m_length*7)) {
-    sendHead(m_counter - (29 + m_length*7));
+  if (m_counter < (36 + m_length*8)) {
+    sendHead(m_counter - (32 + m_length*8));
     m_counter++;
-    bitDelay();
+    return false;
+    //bitDelay();
   }
   //Serial.println("$");
-  return true;
+  return false;
 }
 
 bool TM1637Display::writeByte(uint8_t step) {
-  //for(uint8_t i = 0; i < 8; i++) {
-  //Serial.print(m_counter);
-  //Serial.print("(");
-  //Serial.print(step);
-  //Serial.print("-");
-  //Serial.print(m_bit_count);
-  //Serial.print(") ");
-  //Serial.println(step);
-  //Serial.print("  ");
   switch(step) {
   case 0:
+    m_bit_count = 8;
+  case 1:
     pinMode(m_pinClk, OUTPUT);
     break;
-  case 1:
+  case 2:
     // Set data bit
     if (m_byte & 0x01)
       pinMode(m_pinDIO, INPUT);
     else
       pinMode(m_pinDIO, OUTPUT);
     break;
-  case 2:
+  case 3:
     pinMode(m_pinClk, INPUT);
     m_byte = m_byte >> 1;
     m_bit_count--;
     break;
-  case 3:
-    // Wait for acknowledge
+  case 4:
+    // Don't Wait for acknowledge
     pinMode(m_pinClk, OUTPUT);
     //pinMode(m_pinDIO, INPUT);
     break;
-  case 4:
+  case 5:
     pinMode(m_pinClk, INPUT);
     break;
-  case 5:
+  case 6:
     //uint8_t ack = digitalRead(m_pinDIO);
     //if (ack == 0)
     //  pinMode(m_pinDIO, OUTPUT);
     break;
-  case 6:
+  case 7:
     pinMode(m_pinClk, OUTPUT);
     break;
   }
-  if (step != 2) {
+  if (step != 3) {
     m_counter++;
   } else if (m_bit_count == 0) {
     m_counter++;
