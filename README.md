@@ -1,6 +1,6 @@
 TM1637-no-delay
 ===============
-Arduino library for TM1637 (LED Driver) forked from [https://github.com/avishorp/TM1637]
+Arduino library for TM1637 (LED Driver) forked from [https://github.com/avishorp/TM1637](avishorp/TM1637)
 
 Description
 -----------
